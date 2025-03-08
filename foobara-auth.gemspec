@@ -6,7 +6,7 @@ Gem::Specification.new do |spec|
   spec.authors = ["Miles Georgi"]
   spec.email = ["azimux@gmail.com"]
 
-  spec.summary = "No description. Add one."
+  spec.summary = "Provides various auth domain commands and models"
   spec.homepage = "https://github.com/foobara/auth"
   spec.license = "Apache-2.0 OR MIT"
   spec.required_ruby_version = Foobara::Auth::MINIMUM_RUBY_VERSION
