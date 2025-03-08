@@ -3,8 +3,7 @@ module Foobara
     module Types
       class Role < Foobara::Entity
         attributes do
-          # TODO: support non-integer primary keys
-          id :integer, :required
+          id :integer
           symbol :symbol, :required
         end
 

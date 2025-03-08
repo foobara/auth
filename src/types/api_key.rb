@@ -1,17 +1,16 @@
-require_relative "user"
-
 module Foobara
   module Auth
     module Types
       class ApiKey < Foobara::Entity
         attributes do
           id :integer
-          token :string, :required, "Base64 representation of the API key", default: -> {
-            Base64.strict_encode64(SecureRandom.random_bytes(32))
-          }
-          user :User, :required
+          hashed_token :string, :required
+          prefix :string, :required
+          token_length :integer, :required
           state :state, :required, default: :needs_approval
-          expires_at :datetime
+          token_parameters :duck, :required
+          expires_at :datetime, :allow_nil
+          created_at :datetime, :required
         end
 
         primary_key :id

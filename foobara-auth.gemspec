@@ -23,6 +23,7 @@ Gem::Specification.new do |spec|
     "CHANGELOG.md"
   ]
 
+  spec.add_dependency "argon2"
   spec.add_dependency "foobara"
 
   spec.require_paths = ["lib"]
