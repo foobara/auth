@@ -73,11 +73,11 @@ module Foobara
       end
 
       def prefix_length
-        4
+        5
       end
 
       def prefix_bytes
-        3
+        4
       end
     end
   end

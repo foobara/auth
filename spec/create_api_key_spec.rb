@@ -32,6 +32,6 @@ RSpec.describe Foobara::Auth::CreateApiKey do
       Foobara::Auth::Types::ApiKey.first
     end
 
-    expect(result[0..3]).to eq(api_key.prefix)
+    expect(result[..4]).to eq(api_key.prefix)
   end
 end

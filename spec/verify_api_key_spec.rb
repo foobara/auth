@@ -1,0 +1,33 @@
+RSpec.describe Foobara::Auth::VerifyApiKey do
+  after { Foobara.reset_alls }
+
+  before do
+    Foobara::Persistence.default_crud_driver = Foobara::Persistence::CrudDrivers::InMemory.new
+  end
+
+  let(:api_key) { Foobara::Auth::CreateApiKey.run! }
+
+  let(:inputs) do
+    { token: api_key }
+  end
+
+  let(:command) { described_class.new(inputs) }
+  let(:outcome) { command.run }
+  let(:result) { outcome.result }
+  let(:errors) { outcome.errors }
+  let(:errors_hash) { outcome.errors_hash }
+
+  it "is successful" do
+    expect(outcome).to be_success
+    expect(result).to be true
+
+    # let's make sure a bad key doesn't work
+    key = nil
+    Foobara::Auth::Types::ApiKey.transaction do |tx|
+      key = Foobara::Auth::CreateApiKey.run!
+      tx.rollback!
+    end
+
+    expect(described_class.run!(token: key)).to be false
+  end
+end
