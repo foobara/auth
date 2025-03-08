@@ -11,7 +11,7 @@ module Foobara
           email :email, :required
           roles [Types::Role], default: []
           api_key [Types::ApiKey], default: []
-          current_password Types::Password, :allow_nil
+          password Types::Password, :allow_nil
         end
 
         primary_key :id
