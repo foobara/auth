@@ -7,6 +7,9 @@ module Foobara
                                needs_approval: {
                                  approve: :approved,
                                  reject: :rejected
+                               },
+                               approved: {
+                                 revoke: :revoked
                                }
                              })
         end

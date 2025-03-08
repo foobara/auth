@@ -48,7 +48,6 @@ module Foobara
           hashed_token: hashed_key,
           prefix: prefix,
           token_length: key_for_user.length,
-          state: :approved,
           token_parameters: argon_params.merge(other_params),
           expires_at: nil,
           created_at: Time.now

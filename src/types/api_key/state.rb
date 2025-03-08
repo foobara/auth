@@ -2,7 +2,7 @@ module Foobara
   module Auth
     module Types
       class ApiKey < Foobara::Entity
-        State = Foobara::Enumerated.make_module(%i[needs_approval approved rejected])
+        State = Foobara::Enumerated.make_module(%i[needs_approval approved rejected revoked])
       end
     end
 
