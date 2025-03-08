@@ -1,12 +1,14 @@
-require "argon2"
 require "securerandom"
 require "base64"
+
+require_relative "build_password"
 
 module Foobara
   module Auth
     class CreateApiKey < Foobara::Command
       result :string
 
+      depends_on BuildPassword
       depends_on_entity Types::ApiKey
 
       def execute
@@ -20,7 +22,7 @@ module Foobara
         key_for_user
       end
 
-      attr_accessor :raw_key, :key_for_user, :hashed_key, :prefix
+      attr_accessor :raw_key, :key_for_user, :hashed_key, :prefix, :build_password_params
 
       def generate_prefix
         bytes = SecureRandom.hex(prefix_bytes)
@@ -40,7 +42,9 @@ module Foobara
       end
 
       def generate_hashed_key
-        self.hashed_key = Argon2::Password.create(key_for_user, **argon_params)
+        password = run_subcommand!(BuildPassword, plaintext_password: key_for_user)
+        self.hashed_key = password.hashed_password
+        self.build_password_params = password.parameters
       end
 
       def create_api_key
@@ -48,7 +52,7 @@ module Foobara
           hashed_token: hashed_key,
           prefix: prefix,
           token_length: key_for_user.length,
-          token_parameters: argon_params.merge(other_params),
+          token_parameters: build_password_params.merge(other_params),
           expires_at: nil,
           created_at: Time.now
         )
@@ -56,15 +60,6 @@ module Foobara
 
       def prepend_prefix
         self.key_for_user = "#{prefix}#{key_for_user}"
-      end
-
-      def argon_params
-        {
-          t_cost: 2,
-          m_cost: 16,
-          parallelism: 1,
-          type: :argon2id
-        }
       end
 
       def other_params

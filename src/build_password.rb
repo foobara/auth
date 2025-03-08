@@ -1,3 +1,5 @@
+require "argon2"
+
 module Foobara
   module Auth
     class BuildPassword < Foobara::Command
