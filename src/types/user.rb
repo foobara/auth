@@ -5,9 +5,12 @@ module Foobara
     module Types
       class User < Foobara::Entity
         attributes do
-          id :integer, :required
+          id :integer
+          username :string, :required
           email :email, :required
           roles [Types::Role], :required, default: []
+          api_key [Types::ApiKey], :required, default: []
+          current_password_hash :string, :allow_nil
         end
 
         primary_key :id

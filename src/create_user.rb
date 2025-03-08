@@ -14,7 +14,7 @@ module Foobara
       attr_accessor :user
 
       def create_user
-        self.user = Types::User.create!(inputs)
+        self.user = Types::User.create(inputs)
       end
     end
   end

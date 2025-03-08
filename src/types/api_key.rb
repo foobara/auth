@@ -22,10 +22,6 @@ module Foobara
         def approve!
           state_machine.approve!
         end
-
-        def reject!
-          state_machine.reject!
-        end
       end
     end
   end
