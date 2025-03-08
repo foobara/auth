@@ -1,4 +1,5 @@
 require_relative "role"
+require_relative "password"
 
 module Foobara
   module Auth
@@ -8,9 +9,9 @@ module Foobara
           id :integer
           username :string, :required
           email :email, :required
-          roles [Types::Role], :required, default: []
-          api_key [Types::ApiKey], :required, default: []
-          current_password_hash :string, :allow_nil
+          roles [Types::Role], default: []
+          api_key [Types::ApiKey], default: []
+          current_password Types::Password, :allow_nil
         end
 
         primary_key :id
