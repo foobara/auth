@@ -1,6 +1,4 @@
 require "argon2"
-require "securerandom"
-require "base64"
 
 module Foobara
   module Auth
