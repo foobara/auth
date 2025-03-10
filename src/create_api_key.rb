@@ -6,6 +6,9 @@ require_relative "build_password"
 module Foobara
   module Auth
     class CreateApiKey < Foobara::Command
+      inputs do
+        user Types::User, :required
+      end
       result :string
 
       depends_on BuildPassword
@@ -48,7 +51,7 @@ module Foobara
       end
 
       def create_api_key
-        Types::ApiKey.create(
+        api_key = Types::ApiKey.create(
           hashed_token: hashed_key,
           prefix: prefix,
           token_length: key_for_user.length,
@@ -56,6 +59,8 @@ module Foobara
           expires_at: nil,
           created_at: Time.now
         )
+
+        user.api_keys = [*user.api_keys, api_key]
       end
 
       def prepend_prefix

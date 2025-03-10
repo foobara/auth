@@ -12,11 +12,15 @@ RSpec.describe Foobara::Auth::ApproveApiKey do
   let(:errors_hash) { outcome.errors_hash }
 
   let(:inputs) do
-    { api_key: api_key.id }
+    {
+      api_key: api_key.id
+    }
   end
 
+  let(:user) { Foobara::Auth::CreateUser.run!(username: "Basil", email: "basil@foobara.com") }
+
   let(:api_key) do
-    Foobara::Auth::CreateApiKey.run!
+    Foobara::Auth::CreateApiKey.run!(user: user.id)
 
     Foobara::Auth::Types::ApiKey.transaction do
       Foobara::Auth::Types::ApiKey.first
