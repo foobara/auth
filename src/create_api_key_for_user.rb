@@ -2,7 +2,7 @@ require "securerandom"
 require "base64"
 
 require_relative "build_password"
-require_relative "create_api_key"
+require_relative "create_token"
 
 module Foobara
   module Auth

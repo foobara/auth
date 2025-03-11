@@ -1,7 +1,7 @@
 require "jwt"
 require "securerandom"
 
-require_relative "create_api_key"
+require_relative "create_token"
 
 module Foobara
   module Auth
