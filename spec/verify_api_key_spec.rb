@@ -1,11 +1,11 @@
-RSpec.describe Foobara::Auth::VerifyApiKey do
+RSpec.describe Foobara::Auth::VerifyToken do
   after { Foobara.reset_alls }
 
   before do
     Foobara::Persistence.default_crud_driver = Foobara::Persistence::CrudDrivers::InMemory.new
   end
 
-  let(:api_key) { Foobara::Auth::CreateApiKey.run!(user: user.id) }
+  let(:api_key) { Foobara::Auth::CreateApiKeyForUser.run!(user: user.id) }
   let(:user) { Foobara::Auth::CreateUser.run!(username: "Basil", email: "basil@foobara.com") }
 
   let(:inputs) do
@@ -24,8 +24,8 @@ RSpec.describe Foobara::Auth::VerifyApiKey do
 
     # let's make sure a bad key doesn't work
     key = nil
-    Foobara::Auth::Types::ApiKey.transaction do |tx|
-      key = Foobara::Auth::CreateApiKey.run!(user: user.id)
+    Foobara::Auth::Types::Token.transaction do |tx|
+      key = Foobara::Auth::CreateApiKeyForUser.run!(user: user.id)
       tx.rollback!
     end
 

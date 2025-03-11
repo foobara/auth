@@ -5,14 +5,14 @@ require_relative "build_password"
 
 module Foobara
   module Auth
-    class CreateApiKey < Foobara::Command
-      inputs do
-        user Types::User, :required
+    class CreateToken < Foobara::Command
+      result do
+        key_for_user :string, :required
+        token Types::Token, :required
       end
-      result :string
 
       depends_on BuildPassword
-      depends_on_entity Types::ApiKey
+      depends_on_entity Types::Token
 
       def execute
         generate_prefix
@@ -22,10 +22,10 @@ module Foobara
         create_api_key
         prepend_prefix
 
-        key_for_user
+        key_for_user_and_token
       end
 
-      attr_accessor :raw_key, :key_for_user, :hashed_key, :prefix, :build_password_params
+      attr_accessor :raw_key, :key_for_user, :hashed_key, :prefix, :build_password_params, :token
 
       def generate_prefix
         bytes = SecureRandom.hex(prefix_bytes)
@@ -51,7 +51,7 @@ module Foobara
       end
 
       def create_api_key
-        api_key = Types::ApiKey.create(
+        self.token = Types::Token.create(
           hashed_token: hashed_key,
           prefix: prefix,
           token_length: key_for_user.length,
@@ -59,12 +59,17 @@ module Foobara
           expires_at: nil,
           created_at: Time.now
         )
-
-        user.api_keys = [*user.api_keys, api_key]
       end
 
       def prepend_prefix
         self.key_for_user = "#{prefix}#{key_for_user}"
+      end
+
+      def key_for_user_and_token
+        {
+          key_for_user:,
+          token:
+        }
       end
 
       def other_params

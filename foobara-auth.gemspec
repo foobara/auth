@@ -24,6 +24,8 @@ Gem::Specification.new do |spec|
   ]
 
   spec.add_dependency "argon2"
+  spec.add_dependency "jwt"
+
   spec.add_dependency "foobara"
 
   spec.require_paths = ["lib"]

@@ -1,7 +1,7 @@
 module Foobara
   module Auth
     module Types
-      class ApiKey < Foobara::Entity
+      class Token < Foobara::Entity
         attributes do
           id :integer
           hashed_token :string, :required
@@ -9,6 +9,7 @@ module Foobara
           token_length :integer, :required
           state :state, :required, default: :needs_approval
           token_parameters :duck, :required
+          token_group :string, :allow_nil
           expires_at :datetime, :allow_nil
           created_at :datetime, :required
         end
@@ -16,7 +17,7 @@ module Foobara
         primary_key :id
 
         def state_machine
-          @state_machine ||= ApiKey::StateMachine.new(owner: self, target_attribute: :state)
+          @state_machine ||= StateMachine.new(owner: self, target_attribute: :state)
         end
 
         def approve!

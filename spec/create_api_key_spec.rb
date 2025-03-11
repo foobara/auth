@@ -1,4 +1,4 @@
-RSpec.describe Foobara::Auth::CreateApiKey do
+RSpec.describe Foobara::Auth::CreateApiKeyForUser do
   after { Foobara.reset_alls }
 
   before do
@@ -18,8 +18,8 @@ RSpec.describe Foobara::Auth::CreateApiKey do
   let(:user) { Foobara::Auth::CreateUser.run!(username: "Basil", email: "basil@foobara.com") }
 
   def count
-    Foobara::Auth::Types::ApiKey.transaction do
-      Foobara::Auth::Types::ApiKey.count
+    Foobara::Auth::Types::Token.transaction do
+      Foobara::Auth::Types::Token.count
     end
   end
 
@@ -30,11 +30,11 @@ RSpec.describe Foobara::Auth::CreateApiKey do
 
     expect(result).to be_a(String)
 
-    api_key = Foobara::Auth::Types::ApiKey.transaction do
+    api_key = Foobara::Auth::Types::Token.transaction do
       reloaded_user = Foobara::Auth::Types::User.load(user.id)
       expect(reloaded_user.api_keys.count).to eq(1)
       key = reloaded_user.api_keys.first
-      Foobara::Auth::Types::ApiKey.load(key)
+      Foobara::Auth::Types::Token.load(key)
     end
 
     expect(result[..4]).to eq(api_key.prefix)

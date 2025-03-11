@@ -1,20 +1,20 @@
 module Foobara
   module Auth
-    class ApproveApiKey < Foobara::Command
+    class ApproveToken < Foobara::Command
       inputs do
-        api_key Types::ApiKey, :required
+        token Types::Token, :required
       end
 
-      result Types::ApiKey
+      result Types::Token
 
       def execute
-        approve_api_key
+        approve_token
 
-        api_key
+        token
       end
 
-      def approve_api_key
-        api_key.approve!
+      def approve_token
+        token.approve!
       end
     end
   end

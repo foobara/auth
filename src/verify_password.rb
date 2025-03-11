@@ -10,7 +10,7 @@ module Foobara
       end
       result :boolean
 
-      depends_on_entity Types::ApiKey
+      depends_on_entity Types::Token
 
       def execute
         # TODO: result in error if no password set yet?
@@ -27,6 +27,7 @@ module Foobara
 
       def check_for_valid_password
         hashed_password = user.password.hashed_password
+
         self.valid_password = if hashed_password
                                 Argon2::Password.verify_password(plaintext_password, user.password.hashed_password)
                               end

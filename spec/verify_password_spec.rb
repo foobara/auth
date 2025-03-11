@@ -6,7 +6,7 @@ RSpec.describe Foobara::Auth::VerifyPassword do
     Foobara::Auth::Types::User.transaction { example.run }
   end
 
-  let(:api_key) { Foobara::Auth::CreateApiKey.run! }
+  let(:api_key) { Foobara::Auth::CreateToken.run! }
   let(:command) { described_class.new(inputs) }
   let(:outcome) { command.run }
   let(:result) { outcome.result }

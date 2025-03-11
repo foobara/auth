@@ -1,4 +1,4 @@
-RSpec.describe Foobara::Auth::ApproveApiKey do
+RSpec.describe Foobara::Auth::ApproveToken do
   after { Foobara.reset_alls }
 
   before do
@@ -13,22 +13,22 @@ RSpec.describe Foobara::Auth::ApproveApiKey do
 
   let(:inputs) do
     {
-      api_key: api_key.id
+      token: token.id
     }
   end
 
   let(:user) { Foobara::Auth::CreateUser.run!(username: "Basil", email: "basil@foobara.com") }
 
-  let(:api_key) do
-    Foobara::Auth::CreateApiKey.run!(user: user.id)
+  let(:token) do
+    Foobara::Auth::CreateApiKeyForUser.run!(user: user.id)
 
-    Foobara::Auth::Types::ApiKey.transaction do
-      Foobara::Auth::Types::ApiKey.first
+    Foobara::Auth::Types::Token.transaction do
+      Foobara::Auth::Types::Token.first
     end
   end
 
   it "is successful" do
-    key = api_key
+    key = token
     expect {
       expect(outcome).to be_success
       key = result
