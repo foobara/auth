@@ -112,7 +112,9 @@ module Foobara
         jwt_secret_text = ENV.fetch("JWT_SECRET", nil)
 
         unless jwt_secret_text
+          # :nocov:
           raise "You must set the JWT_SECRET environment variable"
+          # :nocov:
         end
 
         jwt_secret_text

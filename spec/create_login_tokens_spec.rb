@@ -102,5 +102,16 @@ RSpec.describe Foobara::Auth::CreateLoginTokens do
         expect(outcome.errors_hash).to include("runtime.invalid_refresh_token")
       end
     end
+
+    context "with no tokens at all" do
+      let(:inputs) do
+        { user: }
+      end
+
+      it "fails with appropriate error" do
+        expect(outcome).to_not be_success
+        expect(outcome.errors_hash).to include("runtime.must_provide_either_token_or_password")
+      end
+    end
   end
 end
