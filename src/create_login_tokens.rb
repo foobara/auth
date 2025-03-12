@@ -2,23 +2,28 @@ require "jwt"
 require "securerandom"
 
 require_relative "create_token"
+require_relative "verify_password"
+require_relative "verify_token"
 
 module Foobara
   module Auth
     class CreateLoginTokens < Foobara::Command
-      class MustProvideEitherRefreshTokenOrPasswordError < Foobara::RuntimeError
+      class MustProvideEitherTokenOrPasswordError < Foobara::RuntimeError
+        context({})
         message "You must provide either a refresh token or a password"
       end
 
       class InvalidRefreshTokenError < Foobara::RuntimeError
+        context refresh_token_id: :integer
         message "Invalid refresh token"
       end
 
       class InvalidPasswordError < Foobara::RuntimeError
+        context({})
         message "Invalid password"
       end
 
-      depends_on CreateToken
+      depends_on CreateToken, VerifyPassword, VerifyToken
 
       inputs do
         user Types::User, :required
@@ -46,6 +51,7 @@ module Foobara
         determine_timestamps
         generate_access_token
         generate_new_refresh_token
+        save_new_refresh_token_on_user
 
         tokens
       end
@@ -57,18 +63,20 @@ module Foobara
 
         if (refresh_token_text.nil? || refresh_token_text.empty?) &&
            (plaintext_password.nil? || plaintext_password.empty?)
-          add_runtime_error(MustProvideEitherRefreshTokenOrPasswordError)
+          add_runtime_error(MustProvideEitherTokenOrPasswordError)
         end
       end
 
       def load_refresh_token
-        self.refresh_token = user.refresh_tokens
+        prefix = refresh_token_text[..4] # TODO: DRY this up
+
+        self.refresh_token = user.refresh_tokens.find do |refresh_token|
+          refresh_token.prefix == prefix
+        end
       end
 
       def verify_refresh_token
-        valid = user.refresh_tokens.any? do |refresh_token|
-          run_subcommand!(VerifyApiKey, token: refresh_token.token)
-        end
+        valid = refresh_token && run_subcommand!(VerifyToken, token: refresh_token_text)
 
         unless valid
           add_runtime_error(InvalidRefreshTokenError)
@@ -76,7 +84,7 @@ module Foobara
       end
 
       def mark_refresh_token_as_used
-        refresh_token.used = true
+        refresh_token.use_up!
       end
 
       def verify_password
@@ -97,7 +105,7 @@ module Foobara
           exp: expires_at.to_i
         }
 
-        self.access_token = JWT.encode(payload, secret, "HS256")
+        self.access_token = JWT.encode(payload, jwt_secret, "HS256")
       end
 
       def jwt_secret
@@ -111,25 +119,21 @@ module Foobara
       end
 
       def generate_new_refresh_token
-        run_subcommand!(CreateToken, token_ttl: refresh_token_ttl)
-        token_group = existing_refresh_token&.token_group || SecureRandom.uuid
+        token_group = refresh_token&.token_group || SecureRandom.uuid
+        token = run_subcommand!(CreateToken, expires_at:, token_group:)
 
-        self.new_refresh_token = Types::RefreshToken.create(
-          token: new_refresh_token_text,
-          expires_at: now + refresh_token_ttl,
-          created_at: now,
-          token_group:
-        )
+        self.new_refresh_token = token
       end
 
       def save_new_refresh_token_on_user
-        user.refresh_tokens << refresh_token_entity
+        # TODO: maybe override #<< on these objects to dirty the entity??
+        user.refresh_tokens += [*user.refresh_tokens, new_refresh_token[:token]]
       end
 
       def tokens
         {
           access_token:,
-          refresh_token: new_refresh_token
+          refresh_token: new_refresh_token[:key_for_user]
         }
       end
     end

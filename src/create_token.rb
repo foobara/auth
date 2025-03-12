@@ -6,6 +6,12 @@ require_relative "build_password"
 module Foobara
   module Auth
     class CreateToken < Foobara::Command
+      inputs do
+        expires_at :datetime
+        token_group :string
+        needs_approval :boolean, default: false
+      end
+
       result do
         key_for_user :string, :required
         token Types::Token, :required
@@ -19,7 +25,10 @@ module Foobara
         generate_raw_key
         generate_key_for_user
         generate_hashed_key
-        create_api_key
+        create_token
+        unless needs_approval?
+          activate_token
+        end
         prepend_prefix
 
         key_for_user_and_token
@@ -50,15 +59,32 @@ module Foobara
         self.build_password_params = password.parameters
       end
 
-      def create_api_key
-        self.token = Types::Token.create(
+      def create_token
+        attributes = {
           hashed_token: hashed_key,
           prefix: prefix,
           token_length: key_for_user.length,
           token_parameters: build_password_params.merge(other_params),
-          expires_at: nil,
           created_at: Time.now
-        )
+        }
+
+        if expires_at
+          attributes[:expires_at] = expires_at
+        end
+
+        if token_group
+          attributes[:token_group] = token_group
+        end
+
+        self.token = Types::Token.create(attributes)
+      end
+
+      def needs_approval?
+        needs_approval
+      end
+
+      def activate_token
+        token.approve!
       end
 
       def prepend_prefix
