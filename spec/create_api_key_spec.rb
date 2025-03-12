@@ -1,4 +1,4 @@
-RSpec.describe Foobara::Auth::CreateApiKeyForUser do
+RSpec.describe Foobara::Auth::CreateApiKey do
   after { Foobara.reset_alls }
 
   before do

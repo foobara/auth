@@ -20,7 +20,7 @@ RSpec.describe Foobara::Auth::ApproveToken do
   let(:user) { Foobara::Auth::CreateUser.run!(username: "Basil", email: "basil@foobara.com") }
 
   let(:token) do
-    Foobara::Auth::CreateApiKeyForUser.run!(user: user.id, needs_approval: true)
+    Foobara::Auth::CreateApiKey.run!(user: user.id, needs_approval: true)
 
     Foobara::Auth::Types::Token.transaction do
       Foobara::Auth::Types::Token.first

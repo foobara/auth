@@ -5,7 +5,7 @@ RSpec.describe Foobara::Auth::VerifyToken do
     Foobara::Persistence.default_crud_driver = Foobara::Persistence::CrudDrivers::InMemory.new
   end
 
-  let(:api_key) { Foobara::Auth::CreateApiKeyForUser.run!(user: user.id) }
+  let(:api_key) { Foobara::Auth::CreateApiKey.run!(user: user.id) }
   let(:user) { Foobara::Auth::CreateUser.run!(username: "Basil", email: "basil@foobara.com") }
 
   let(:inputs) do
@@ -25,7 +25,7 @@ RSpec.describe Foobara::Auth::VerifyToken do
     # let's make sure a bad key doesn't work
     key = nil
     Foobara::Auth::Types::Token.transaction do |tx|
-      key = Foobara::Auth::CreateApiKeyForUser.run!(user: user.id)
+      key = Foobara::Auth::CreateApiKey.run!(user: user.id)
       tx.rollback!
     end
 

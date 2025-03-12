@@ -6,7 +6,7 @@ require_relative "create_token"
 
 module Foobara
   module Auth
-    class CreateApiKeyForUser < Foobara::Command
+    class CreateApiKey < Foobara::Command
       inputs do
         user Types::User, :required
         needs_approval :boolean, default: false
