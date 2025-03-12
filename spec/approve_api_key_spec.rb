@@ -29,9 +29,10 @@ RSpec.describe Foobara::Auth::ApproveToken do
 
   it "is successful" do
     key = token
+
     expect {
       expect(outcome).to be_success
       key = result
-    }.to change { key.state }.from(:needs_approval).to(:approved)
+    }.to change { key.state }.from(:needs_approval).to(:active)
   end
 end

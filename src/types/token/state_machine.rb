@@ -5,11 +5,12 @@ module Foobara
         class StateMachine < Foobara::StateMachine
           set_transition_map({
                                needs_approval: {
-                                 approve: :approved,
+                                 approve: :active,
                                  reject: :rejected
                                },
-                               approved: {
-                                 revoke: :revoked
+                               active: {
+                                 revoke: :revoked,
+                                 use_up: :inactive
                                }
                              })
         end

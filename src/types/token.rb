@@ -23,6 +23,14 @@ module Foobara
         def approve!
           state_machine.approve!
         end
+
+        def use_up!
+          state_machine.use_up!
+        end
+
+        def inactive?
+          state_machine.current_state == State::INACTIVE
+        end
       end
     end
   end
