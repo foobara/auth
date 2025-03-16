@@ -9,7 +9,7 @@ RSpec.describe Foobara::Auth::VerifyToken do
   let(:user) { Foobara::Auth::CreateUser.run!(username: "Basil", email: "basil@foobara.com") }
 
   let(:inputs) do
-    { token: api_key }
+    { token_string: api_key }
   end
 
   let(:command) { described_class.new(inputs) }
@@ -20,15 +20,12 @@ RSpec.describe Foobara::Auth::VerifyToken do
 
   it "is successful" do
     expect(outcome).to be_success
-    expect(result).to be true
+    expect(result[:verified]).to be true
 
     # let's make sure a bad key doesn't work
-    key = nil
-    Foobara::Auth::Types::Token.transaction do |tx|
-      key = Foobara::Auth::CreateApiKey.run!(user: user.id)
-      tx.rollback!
-    end
+    bad_key = api_key.dup
+    bad_key[-5] = bad_key[-5] == "x" ? "y" : "x"
 
-    expect(described_class.run!(token: key)).to be false
+    expect(described_class.run!(token_string: bad_key)[:verified]).to be false
   end
 end

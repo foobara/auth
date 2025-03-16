@@ -3,10 +3,8 @@ module Foobara
     module Types
       class Token < Foobara::Entity
         attributes do
-          id :integer
-          hashed_token :string, :required
-          prefix :string, :required
-          token_length :integer, :required
+          id :string, :required
+          hashed_secret :string, :required
           state :state, :required, default: :needs_approval
           token_parameters :duck, :required
           token_group :string, :allow_nil
@@ -30,6 +28,10 @@ module Foobara
 
         def inactive?
           state_machine.current_state == State::INACTIVE
+        end
+
+        def active?
+          state_machine.current_state == State::ACTIVE
         end
       end
     end

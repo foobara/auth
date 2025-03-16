@@ -13,57 +13,58 @@ module Foobara
       end
 
       result do
-        key_for_user :string, :required
-        token Types::Token, :required
+        token_string :string, :required
+        token_record Types::Token, :required
       end
 
       depends_on BuildPassword
       depends_on_entity Types::Token
 
       def execute
-        generate_prefix
-        generate_raw_key
-        generate_key_for_user
-        generate_hashed_key
-        create_token
+        generate_token_secret
+        generate_hashed_secret
+        generate_token_id
+        construct_token_string
+        create_token_record
+
         unless needs_approval?
           activate_token
         end
-        prepend_prefix
 
-        key_for_user_and_token
+        token_string_and_record
       end
 
-      attr_accessor :raw_key, :key_for_user, :hashed_key, :prefix, :build_password_params, :token
+      attr_accessor :token_id, :token_secret, :token_string, :hashed_secret, :build_password_params, :token_record
 
-      def generate_prefix
-        bytes = SecureRandom.hex(prefix_bytes)
-        self.prefix = Base64.strict_encode64(bytes)[0..prefix_length - 1]
+      def generate_token_id
+        bytes = SecureRandom.random_bytes(token_id_bytes)
+
+        begin
+          token_id = Base64.strict_encode64(bytes)
+        end while Types::Token.exists?(token_id)
+
+        self.token_id = token_id
       end
 
-      def generate_raw_key
-        self.raw_key = SecureRandom.hex(bytes)
+      def generate_token_secret
+        bytes = SecureRandom.random_bytes(secret_bytes)
+        self.token_secret = Base64.strict_encode64(bytes)
       end
 
-      def bytes
-        24
+      def secret_bytes
+        32
       end
 
-      def generate_key_for_user
-        self.key_for_user = Base64.strict_encode64(raw_key)
-      end
-
-      def generate_hashed_key
-        password = run_subcommand!(BuildPassword, plaintext_password: key_for_user)
-        self.hashed_key = password.hashed_password
+      def generate_hashed_secret
+        password = run_subcommand!(BuildPassword, plaintext_password: token_secret)
+        self.hashed_secret = password.hashed_password
         self.build_password_params = password.parameters
       end
 
-      def create_token
+      def create_token_record
         attributes = {
-          hashed_token: hashed_key,
-          prefix: prefix,
-          token_length: key_for_user.length,
+          hashed_secret:,
+          id: token_id,
           token_parameters: build_password_params.merge(other_params),
           created_at: Time.now
         }
@@ -76,7 +77,7 @@ module Foobara
           attributes[:token_group] = token_group
         end
 
-        self.token = Types::Token.create(attributes)
+        self.token_record = Types::Token.create(attributes)
       end
 
       def needs_approval?
@@ -84,30 +85,26 @@ module Foobara
       end
 
       def activate_token
-        token.approve!
+        token_record.approve!
       end
 
-      def prepend_prefix
-        self.key_for_user = "#{prefix}#{key_for_user}"
+      def construct_token_string
+        self.token_string = "#{token_id}_#{token_secret}"
       end
 
-      def key_for_user_and_token
+      def token_string_and_record
         {
-          key_for_user:,
-          token:
+          token_string:,
+          token_record:
         }
       end
 
       def other_params
-        { bytes:, prefix_length:, prefix_bytes: }
+        { secret_bytes:, token_id_bytes: }
       end
 
-      def prefix_length
-        5
-      end
-
-      def prefix_bytes
-        4
+      def token_id_bytes
+        6
       end
     end
   end

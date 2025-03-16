@@ -28,8 +28,8 @@ module Foobara
       def create_token
         result = run_subcommand!(CreateToken, needs_approval:)
 
-        self.token = result[:token]
-        self.key_for_user = result[:key_for_user]
+        self.token = result[:token_record]
+        self.key_for_user = result[:token_string]
       end
 
       def associate_token_with_user

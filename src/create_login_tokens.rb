@@ -40,6 +40,7 @@ module Foobara
 
       def execute
         if refresh_token_text
+          determine_refresh_token_id_and_secret
           load_refresh_token
           verify_refresh_token
           # Delete it instead maybe?
@@ -56,7 +57,8 @@ module Foobara
         tokens
       end
 
-      attr_accessor :access_token, :new_refresh_token, :now, :expires_at, :refresh_token
+      attr_accessor :access_token, :new_refresh_token, :now, :expires_at, :refresh_token,
+                    :refresh_token_id, :refresh_token_secret
 
       def validate
         super
@@ -67,16 +69,18 @@ module Foobara
         end
       end
 
-      def load_refresh_token
-        prefix = refresh_token_text[..4] # TODO: DRY this up
+      def determine_refresh_token_id_and_secret
+        self.refresh_token_id, self.refresh_token_secret = refresh_token_text.split("_")
+      end
 
+      def load_refresh_token
         self.refresh_token = user.refresh_tokens.find do |refresh_token|
-          refresh_token.prefix == prefix
+          refresh_token.id == refresh_token_id
         end
       end
 
       def verify_refresh_token
-        valid = refresh_token && run_subcommand!(VerifyToken, token: refresh_token_text)
+        valid = refresh_token && run_subcommand!(VerifyToken, token_string: refresh_token_text)
 
         unless valid
           add_runtime_error(InvalidRefreshTokenError)
@@ -129,13 +133,13 @@ module Foobara
 
       def save_new_refresh_token_on_user
         # TODO: maybe override #<< on these objects to dirty the entity??
-        user.refresh_tokens += [*user.refresh_tokens, new_refresh_token[:token]]
+        user.refresh_tokens += [*user.refresh_tokens, new_refresh_token[:token_record]]
       end
 
       def tokens
         {
           access_token:,
-          refresh_token: new_refresh_token[:key_for_user]
+          refresh_token: new_refresh_token[:token_string]
         }
       end
     end
