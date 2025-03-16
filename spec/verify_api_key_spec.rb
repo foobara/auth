@@ -6,6 +6,7 @@ RSpec.describe Foobara::Auth::VerifyToken do
   end
 
   let(:api_key) { Foobara::Auth::CreateApiKey.run!(user: user.id) }
+  let(:api_key_id) { api_key.split("_").first }
   let(:user) { Foobara::Auth::CreateUser.run!(username: "Basil", email: "basil@foobara.com") }
 
   let(:inputs) do
@@ -27,5 +28,24 @@ RSpec.describe Foobara::Auth::VerifyToken do
     bad_key[-5] = bad_key[-5] == "x" ? "y" : "x"
 
     expect(described_class.run!(token_string: bad_key)[:verified]).to be false
+  end
+
+  context "when token is expired" do
+    before do
+      api_key
+      Foobara::Auth::Types::Token.transaction do
+        key = Foobara::Auth::Types::Token.load(api_key_id)
+        key.expires_at = Time.now - 100
+      end
+    end
+
+    it "is not successful and expires the token" do
+      expect(outcome).to_not be_success
+      expect(outcome.errors_hash.keys).to include("runtime.expired_token")
+      Foobara::Auth::Types::Token.transaction do
+        key = Foobara::Auth::Types::Token.load(api_key_id)
+        expect(key.state_machine.current_state).to eq(Foobara::Auth::Types::Token::State::EXPIRED)
+      end
+    end
   end
 end

@@ -26,6 +26,10 @@ module Foobara
           state_machine.use_up!
         end
 
+        def expire!
+          state_machine.expire!
+        end
+
         def inactive?
           state_machine.current_state == State::INACTIVE
         end

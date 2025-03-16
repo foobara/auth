@@ -13,6 +13,11 @@ module Foobara
         end
       end
 
+      class ExpiredTokenError < Foobara::RuntimeError
+        context({})
+        message "Token is expired"
+      end
+
       inputs do
         # TODO: we should add a processor that flags an attribute as sensitive so we can scrub
         token_string :string, :required
@@ -34,6 +39,7 @@ module Foobara
         end
 
         validate_token_is_active
+        validate_token_is_not_expired
         verify_hashed_secret_against_token_record
 
         verified_and_token_record
@@ -67,6 +73,16 @@ module Foobara
         hashed_secret = token_record_to_verify_against.hashed_secret
 
         self.verified = Argon2::Password.verify_password(secret, hashed_secret)
+      end
+
+      def validate_token_is_not_expired
+        if token_record_to_verify_against.expires_at&.<(Time.now)
+          Types::Token.transaction(mode: :open_nested) do
+            token = Types::Token.load(token_record_to_verify_against.id)
+            token.expire!
+          end
+          add_runtime_error(ExpiredTokenError)
+        end
       end
 
       def validate_token_is_active

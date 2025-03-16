@@ -10,7 +10,8 @@ module Foobara
                                },
                                active: {
                                  revoke: :revoked,
-                                 use_up: :inactive
+                                 use_up: :inactive,
+                                 expire: :expired
                                }
                              })
         end
