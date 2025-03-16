@@ -5,11 +5,11 @@ module Foobara
     class VerifyToken < Foobara::Command
       class InactiveTokenError < Foobara::RuntimeError
         context do
-          state Types::Token::State, :required
+          state :state, :required
         end
 
         def message
-          "Expected token to be active but it is #{state}"
+          "Expected token to be active but it is #{context[:state]}"
         end
       end
 
@@ -60,10 +60,6 @@ module Foobara
         self.token_id, self.secret = token_string.split("_")
       end
 
-      def check_against_specific_token?
-        !!token_record
-      end
-
       def load_token_record
         self.token_record_to_verify_against = Types::Token.load(token_id)
         # TODO: handle no record found...
@@ -87,7 +83,13 @@ module Foobara
 
       def validate_token_is_active
         unless token_record_to_verify_against.active?
-          add_runtime_error(InactiveTokenError, state: token_record_to_verify_against.current_state)
+          add_runtime_error(
+            InactiveTokenError.new(
+              context: {
+                state: token_record_to_verify_against.state_machine.current_state
+              }
+            )
+          )
         end
       end
 

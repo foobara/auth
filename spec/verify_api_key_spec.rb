@@ -48,4 +48,19 @@ RSpec.describe Foobara::Auth::VerifyToken do
       end
     end
   end
+
+  context "when token is inactivated" do
+    before do
+      api_key
+      Foobara::Auth::Types::Token.transaction do
+        key = Foobara::Auth::Types::Token.load(api_key_id)
+        key.state_machine.revoke!
+      end
+    end
+
+    it "is not successful" do
+      expect(outcome).to_not be_success
+      expect(outcome.errors_hash.keys).to include("runtime.inactive_token")
+    end
+  end
 end
