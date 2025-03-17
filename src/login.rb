@@ -13,10 +13,18 @@ module Foobara
         message "Invalid password"
       end
 
-      depends_on CreateToken, VerifyPassword
+      class NoUserIdEmailOrUsernameGivenError < Foobara::RuntimeError
+        context({})
+        message "No user id, email, or username given"
+      end
+
+      depends_on CreateToken, VerifyPassword, FindUser
 
       inputs do
-        user Types::User, :required
+        user Types::User, :allow_nil
+        username :string, :allow_nil
+        email :string, :allow_nil
+        username_or_email :string, :allow_nil
         plaintext_password :string, :required
         # Configure these instead of defaulting them here?
         token_ttl :integer, default: 30 * 60
@@ -29,6 +37,7 @@ module Foobara
       end
 
       def execute
+        find_user_to_login
         verify_password
         # TODO: DRY these 5 up
         determine_timestamps
@@ -40,10 +49,36 @@ module Foobara
         tokens
       end
 
-      attr_accessor :access_token, :new_refresh_token, :now, :expires_at, :token_group
+      attr_accessor :access_token, :new_refresh_token, :now, :expires_at, :token_group, :user_to_login
+
+      def find_user_to_login
+        if user
+          self.user_to_login = user
+        elsif username
+          self.user_to_login = run_subcommand!(FindUser, username:)
+        elsif email
+          self.user_to_login = run_subcommand!(FindUser, email:)
+        elsif username_or_email
+          begin
+            self.user_to_login = run_subcommand!(FindUser, username: username_or_email)
+          rescue Halt
+            # I'm a bit nervous about rescuing Halt and clearing the errors, but I'm more nervous bout
+            # introducing a #run_subcommand method.
+            if error_collection.size == 1 && error_collection.errors.first.is_a?(FindUser::UserNotFoundError) &&
+               username_or_email.include?("@")
+              error_collection.clear
+              self.user_to_login = run_subcommand!(FindUser, email: username_or_email)
+            else
+              raise
+            end
+          end
+        else
+          add_runtime_error(NoUserIdEmailOrUsernameGivenError)
+        end
+      end
 
       def verify_password
-        unless run_subcommand!(VerifyPassword, user:, plaintext_password:)
+        unless run_subcommand!(VerifyPassword, user: user_to_login, plaintext_password:)
           add_runtime_error(InvalidPasswordError)
         end
       end
@@ -54,7 +89,7 @@ module Foobara
       end
 
       def generate_access_token
-        payload = { sub: user.id, exp: expires_at.to_i }
+        payload = { sub: user_to_login.id, exp: expires_at.to_i }
 
         self.access_token = JWT.encode(payload, jwt_secret, "HS256")
       end
@@ -81,7 +116,7 @@ module Foobara
 
       def save_new_refresh_token_on_user
         # TODO: maybe override #<< on these objects to dirty the entity??
-        user.refresh_tokens += [*user.refresh_tokens, new_refresh_token[:token_record]]
+        user_to_login.refresh_tokens += [*user_to_login.refresh_tokens, new_refresh_token[:token_record]]
       end
 
       def tokens
