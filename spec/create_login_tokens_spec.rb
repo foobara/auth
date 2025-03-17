@@ -30,8 +30,7 @@ RSpec.describe Foobara::Auth::Login do
     it "creates a JWT with correct values" do
       expect(outcome).to be_success
       jwt_payload = JWT.decode(result[:access_token], ENV.fetch("JWT_SECRET", nil), true, algorithm: "HS256").first
-      expect(jwt_payload["user_id"]).to eq(user.id)
-      expect(jwt_payload["username"]).to eq(user.username)
+      expect(jwt_payload["sub"]).to eq(user.id)
       expect(jwt_payload["exp"]).to be > Time.now.to_i
     end
 

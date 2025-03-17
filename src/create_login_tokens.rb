@@ -54,11 +54,7 @@ module Foobara
       end
 
       def generate_access_token
-        payload = {
-          user_id: user.id,
-          username: user.username,
-          exp: expires_at.to_i
-        }
+        payload = { sub: user.id, exp: expires_at.to_i }
 
         self.access_token = JWT.encode(payload, jwt_secret, "HS256")
       end
