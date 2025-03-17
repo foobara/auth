@@ -8,14 +8,16 @@ module Foobara
       inputs do
         username :string, :required
         email :email, :required
-        plaintext_password :string, :required
+        plaintext_password :string, :allow_nil
       end
 
       result Types::User
 
       def execute
         create_user
-        set_password
+        if password?
+          set_password
+        end
 
         user
       end
@@ -24,6 +26,10 @@ module Foobara
 
       def create_user
         self.user = run_subcommand!(CreateUser, username:, email:)
+      end
+
+      def password?
+        plaintext_password && !plaintext_password.empty?
       end
 
       def set_password
