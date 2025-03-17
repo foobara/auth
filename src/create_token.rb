@@ -1,7 +1,7 @@
 require "securerandom"
 require "base64"
 
-require_relative "build_password"
+require_relative "build_secret"
 
 module Foobara
   module Auth

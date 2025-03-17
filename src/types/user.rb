@@ -1,5 +1,5 @@
 require_relative "role"
-require_relative "password"
+require_relative "secret"
 
 module Foobara
   module Auth
