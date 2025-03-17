@@ -1,5 +1,3 @@
-require "argon2"
-
 module Foobara
   module Auth
     class SetPassword < Foobara::Command

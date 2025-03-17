@@ -68,7 +68,7 @@ module Foobara
       def verify_hashed_secret_against_token_record
         hashed_secret = token_record_to_verify_against.hashed_secret
 
-        self.verified = Argon2::Password.verify_password(secret, hashed_secret)
+        self.verified = run_subcommand!(VerifySecret, secret:, hashed_secret:)
       end
 
       def validate_token_is_not_expired
