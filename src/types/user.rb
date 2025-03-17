@@ -12,7 +12,7 @@ module Foobara
           roles [Types::Role], default: []
           api_keys [Types::Token], default: []
           refresh_tokens [Types::Token], default: []
-          password Types::Password, :allow_nil
+          password_secret Types::Secret, :allow_nil
         end
 
         primary_key :id

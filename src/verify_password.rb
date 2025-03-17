@@ -26,11 +26,10 @@ module Foobara
       end
 
       def check_for_valid_password
-        hashed_password = user.password.hashed_password
+        hashed_secret = user.password_secret.hashed_secret
 
-        self.valid_password = if hashed_password
-                                run_subcommand!(VerifySecret, secret: plaintext_password,
-                                                              hashed_secret: hashed_password)
+        self.valid_password = if hashed_secret
+                                run_subcommand!(VerifySecret, secret: plaintext_password, hashed_secret:)
                               end
       end
     end

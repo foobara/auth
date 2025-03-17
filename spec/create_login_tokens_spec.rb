@@ -110,7 +110,7 @@ RSpec.describe Foobara::Auth::CreateLoginTokens do
 
       it "fails with appropriate error" do
         expect(outcome).to_not be_success
-        expect(outcome.errors_hash).to include("runtime.must_provide_either_token_or_password")
+        expect(outcome.errors_hash.keys).to include("runtime.must_provide_either_token_or_password")
       end
     end
   end

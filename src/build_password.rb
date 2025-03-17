@@ -2,28 +2,28 @@ require "argon2"
 
 module Foobara
   module Auth
-    class BuildPassword < Foobara::Command
+    class BuildSecret < Foobara::Command
       inputs do
-        plaintext_password :string, :required
+        secret :string, :required
       end
-      result Types::Password
+      result Types::Secret
 
       def execute
-        generate_hashed_password
-        build_password
+        generate_hashed_secret
+        build_secret
 
-        password
+        secret_model
       end
 
-      attr_accessor :hashed_password, :password
+      attr_accessor :hashed_secret, :secret_model
 
-      def generate_hashed_password
-        self.hashed_password = Argon2::Password.create(plaintext_password, **argon_params)
+      def generate_hashed_secret
+        self.hashed_secret = Argon2::Password.create(secret, **argon_params)
       end
 
-      def build_password
-        self.password = Types::Password.new(
-          hashed_password:,
+      def build_secret
+        self.secret_model = Types::Secret.new(
+          hashed_secret:,
           parameters: argon_params.merge(other_params),
           created_at: Time.now
         )

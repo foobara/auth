@@ -17,7 +17,7 @@ module Foobara
         token_record Types::Token, :required
       end
 
-      depends_on BuildPassword
+      depends_on BuildSecret
       depends_on_entity Types::Token
 
       def execute
@@ -56,9 +56,9 @@ module Foobara
       end
 
       def generate_hashed_secret
-        password = run_subcommand!(BuildPassword, plaintext_password: token_secret)
-        self.hashed_secret = password.hashed_password
-        self.build_password_params = password.parameters
+        secret = run_subcommand!(BuildSecret, secret: token_secret)
+        self.hashed_secret = secret.hashed_secret
+        self.build_password_params = secret.parameters
       end
 
       def create_token_record

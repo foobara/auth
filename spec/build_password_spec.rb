@@ -1,4 +1,4 @@
-RSpec.describe Foobara::Auth::BuildPassword do
+RSpec.describe Foobara::Auth::BuildSecret do
   let(:command) { described_class.new(inputs) }
   let(:outcome) { command.run }
   let(:result) { outcome.result }
@@ -6,14 +6,14 @@ RSpec.describe Foobara::Auth::BuildPassword do
   let(:errors_hash) { outcome.errors_hash }
 
   let(:inputs) do
-    { plaintext_password: }
+    { secret: }
   end
 
-  let(:plaintext_password) { "somepassword" }
+  let(:secret) { "somepassword" }
 
   it "is successful" do
     expect(outcome).to be_success
 
-    expect(result).to be_a(Foobara::Auth::Types::Password)
+    expect(result).to be_a(Foobara::Auth::Types::Secret)
   end
 end

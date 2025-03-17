@@ -19,8 +19,8 @@ RSpec.describe Foobara::Auth::SetPassword do
   let(:plaintext_password) { "somepassword" }
 
   it "is successful" do
-    expect(user.password).to be_nil
+    expect(user.password_secret).to be_nil
     expect(outcome).to be_success
-    expect(result.password).to be_a(Foobara::Auth::Types::Password)
+    expect(result.password_secret).to be_a(Foobara::Auth::Types::Secret)
   end
 end

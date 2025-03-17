@@ -9,7 +9,7 @@ module Foobara
       end
       result Types::User
 
-      depends_on BuildPassword
+      depends_on BuildSecret
 
       # TODO: should we enforce certain password requirements?
       def execute
@@ -19,14 +19,14 @@ module Foobara
         user
       end
 
-      attr_accessor :password
+      attr_accessor :password_secret
 
       def build_password
-        self.password = run_subcommand!(BuildPassword, plaintext_password:)
+        self.password_secret = run_subcommand!(BuildSecret, secret: plaintext_password)
       end
 
       def set_password_on_user
-        user.password = password
+        user.password_secret = password_secret
       end
     end
   end

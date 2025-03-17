@@ -13,7 +13,7 @@ RSpec.describe Foobara::Auth::ApproveToken do
 
   let(:inputs) do
     {
-      token: token.id
+      token_record: token.id
     }
   end
 
