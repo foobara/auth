@@ -1,4 +1,4 @@
-RSpec.describe Foobara::Auth::CreateLoginTokens do
+RSpec.describe Foobara::Auth::Login do
   after { Foobara.reset_alls }
 
   before do
@@ -54,63 +54,7 @@ RSpec.describe Foobara::Auth::CreateLoginTokens do
 
       it "fails with appropriate error" do
         expect(outcome).to_not be_success
-        expect(errors.first).to be_a(Foobara::Auth::CreateLoginTokens::InvalidPasswordError)
-      end
-    end
-  end
-
-  context "when authenticating with refresh token" do
-    let(:refresh_token_text) do
-      described_class.run!(user: user.id, plaintext_password:)[:refresh_token]
-    end
-
-    let(:inputs) do
-      {
-        user: user.id,
-        refresh_token_text:
-      }
-    end
-
-    it "is successful" do
-      expect(outcome).to be_success
-      expect(result[:access_token]).to be_a(String)
-      expect(result[:refresh_token]).to be_a(String)
-    end
-
-    it "marks the original refresh token as used" do
-      refresh_token_text
-
-      reloaded_user = Foobara::Auth::FindUser.run!(id: user.id)
-      original_token_id = reloaded_user.refresh_tokens.first.id
-
-      expect {
-        outcome
-      }.to change {
-        Foobara::Auth::Types::User.transaction do
-          Foobara::Auth::Types::Token.load(original_token_id).inactive?
-        end
-      }.from(false).to(true)
-    end
-
-    context "with an invalid refresh token" do
-      let(:inputs) do
-        { user:, refresh_token_text: "invalid_token" }
-      end
-
-      it "fails with appropriate error" do
-        expect(outcome).to_not be_success
-        expect(outcome.errors_hash).to include("runtime.invalid_refresh_token")
-      end
-    end
-
-    context "with no tokens at all" do
-      let(:inputs) do
-        { user: }
-      end
-
-      it "fails with appropriate error" do
-        expect(outcome).to_not be_success
-        expect(outcome.errors_hash.keys).to include("runtime.must_provide_either_token_or_password")
+        expect(errors.first).to be_a(Foobara::Auth::Login::InvalidPasswordError)
       end
     end
   end

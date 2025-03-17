@@ -7,28 +7,18 @@ require_relative "verify_token"
 
 module Foobara
   module Auth
-    class CreateLoginTokens < Foobara::Command
-      class MustProvideEitherTokenOrPasswordError < Foobara::RuntimeError
-        context({})
-        message "You must provide either a refresh token or a password"
-      end
-
-      class InvalidRefreshTokenError < Foobara::RuntimeError
-        context refresh_token_id: :integer
-        message "Invalid refresh token"
-      end
-
+    class Login < Foobara::Command
       class InvalidPasswordError < Foobara::RuntimeError
         context({})
         message "Invalid password"
       end
 
-      depends_on CreateToken, VerifyPassword, VerifyToken
+      depends_on CreateToken, VerifyPassword
 
       inputs do
         user Types::User, :required
-        plaintext_password :string, :allow_nil
-        refresh_token_text :string, :allow_nil
+        plaintext_password :string, :required
+        # Configure these instead of defaulting them here?
         token_ttl :integer, default: 30 * 60
         refresh_token_ttl :integer, default: 7 * 24 * 60 * 60
       end
@@ -39,57 +29,18 @@ module Foobara
       end
 
       def execute
-        if refresh_token_text
-          determine_refresh_token_id_and_secret
-          load_refresh_token
-          verify_refresh_token
-          # Delete it instead maybe?
-          mark_refresh_token_as_used
-        else
-          verify_password
-        end
-
+        verify_password
+        # TODO: DRY these 5 up
         determine_timestamps
         generate_access_token
+        determine_token_group
         generate_new_refresh_token
         save_new_refresh_token_on_user
 
         tokens
       end
 
-      attr_accessor :access_token, :new_refresh_token, :now, :expires_at, :refresh_token,
-                    :refresh_token_id, :refresh_token_secret
-
-      def validate
-        super
-
-        if (refresh_token_text.nil? || refresh_token_text.empty?) &&
-           (plaintext_password.nil? || plaintext_password.empty?)
-          add_runtime_error(MustProvideEitherTokenOrPasswordError)
-        end
-      end
-
-      def determine_refresh_token_id_and_secret
-        self.refresh_token_id, self.refresh_token_secret = refresh_token_text.split("_")
-      end
-
-      def load_refresh_token
-        self.refresh_token = user.refresh_tokens.find do |refresh_token|
-          refresh_token.id == refresh_token_id
-        end
-      end
-
-      def verify_refresh_token
-        valid = refresh_token && run_subcommand!(VerifyToken, token_string: refresh_token_text)
-
-        unless valid
-          add_runtime_error(InvalidRefreshTokenError)
-        end
-      end
-
-      def mark_refresh_token_as_used
-        refresh_token.use_up!
-      end
+      attr_accessor :access_token, :new_refresh_token, :now, :expires_at, :token_group
 
       def verify_password
         unless run_subcommand!(VerifyPassword, user:, plaintext_password:)
@@ -124,11 +75,12 @@ module Foobara
         jwt_secret_text
       end
 
-      def generate_new_refresh_token
-        token_group = refresh_token&.token_group || SecureRandom.uuid
-        token = run_subcommand!(CreateToken, expires_at:, token_group:)
+      def determine_token_group
+        self.token_group = SecureRandom.uuid
+      end
 
-        self.new_refresh_token = token
+      def generate_new_refresh_token
+        self.new_refresh_token = run_subcommand!(CreateToken, expires_at:, token_group:)
       end
 
       def save_new_refresh_token_on_user
