@@ -2,13 +2,23 @@ module Foobara
   module Auth
     class FindUser < Foobara::Command
       class UserNotFoundError < Foobara::RuntimeError
-        context Types::User.attributes_for_find_by
+        context do
+          id :integer
+          username :string
+          email :email
+        end
+
         def message
           "No user found for #{context}"
         end
       end
 
-      inputs Types::User.attributes_for_find_by
+      inputs do
+        id :integer
+        username :string
+        email :email
+      end
+
       result Types::User
 
       def execute
