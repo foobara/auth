@@ -6,6 +6,6 @@ module Foobara
       end
     end
 
-    foobara_register_type(:state, :symbol, one_of: Types::Token::State)
+    foobara_register_type(:token_state, :symbol, one_of: Types::Token::State)
   end
 end

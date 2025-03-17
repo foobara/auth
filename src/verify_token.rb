@@ -5,7 +5,7 @@ module Foobara
     class VerifyToken < Foobara::Command
       class InactiveTokenError < Foobara::RuntimeError
         context do
-          state :state, :required
+          state :token_state, :required
         end
 
         def message

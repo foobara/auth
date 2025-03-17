@@ -5,7 +5,7 @@ module Foobara
         attributes do
           id :string, :required
           hashed_secret :string, :required
-          state :state, :required, default: :needs_approval
+          state :token_state, :required, default: :needs_approval
           token_parameters :duck, :required
           token_group :string, :allow_nil
           expires_at :datetime, :allow_nil
