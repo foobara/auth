@@ -20,7 +20,7 @@ module Foobara
 
       inputs do
         # TODO: we should add a processor that flags an attribute as sensitive so we can scrub
-        token_string :string, :required
+        token_string :string, :required, :sensitive
         token_record Types::Token, "Instead of finding a persisted token, check against a specific token record"
       end
 

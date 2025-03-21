@@ -8,7 +8,7 @@ module Foobara
       inputs do
         username :string, :required
         email :email, :required
-        plaintext_password :string, :allow_nil
+        plaintext_password :string, :allow_nil, :sensitive_exposed
       end
 
       result Types::User

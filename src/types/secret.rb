@@ -3,7 +3,7 @@ module Foobara
     module Types
       class Secret < Foobara::Model
         attributes do
-          hashed_secret :string, :required
+          hashed_secret :string, :required, :sensitive
           parameters :duck, :required
           created_at :datetime, :required
         end

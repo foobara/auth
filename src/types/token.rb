@@ -4,7 +4,7 @@ module Foobara
       class Token < Foobara::Entity
         attributes do
           id :string, :required
-          hashed_secret :string, :required
+          hashed_secret :string, :required, :sensitive
           state :token_state, :required, default: :needs_approval
           token_parameters :duck, :required
           token_group :string, :allow_nil

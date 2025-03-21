@@ -5,7 +5,7 @@ module Foobara
     class VerifySecret < Foobara::Command
       inputs do
         secret :string, :required # TODO: we should add a processor that flags an attribute as sensitive so we can scrub
-        hashed_secret :string, :required
+        hashed_secret :string, :required, :sensitive
       end
 
       result :boolean

@@ -11,7 +11,7 @@ module Foobara
         user Types::User, :required
         needs_approval :boolean, default: false
       end
-      result :string
+      result :string, :sensitive_exposed
 
       depends_on CreateToken
       depends_on_entity Types::Token

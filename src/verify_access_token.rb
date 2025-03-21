@@ -5,7 +5,7 @@ module Foobara
     class VerifyAccessToken < Foobara::Command
       inputs do
         # TODO: we should add a processor that flags an attribute as sensitive so we can scrub
-        access_token :string, :required
+        access_token :string, :required, :sensitive
       end
 
       result do

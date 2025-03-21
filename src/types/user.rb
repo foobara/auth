@@ -10,9 +10,9 @@ module Foobara
           username :string, :required
           email :email, :required
           roles [Types::Role], default: []
-          api_keys [Types::Token], default: []
-          refresh_tokens [Types::Token], default: []
-          password_secret Types::Secret, :allow_nil
+          api_keys [Types::Token], :sensitive, default: []
+          refresh_tokens [Types::Token], :sensitive, default: []
+          password_secret Types::Secret, :sensitive, :allow_nil
         end
 
         primary_key :id

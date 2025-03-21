@@ -4,9 +4,9 @@ module Foobara
   module Auth
     class BuildSecret < Foobara::Command
       inputs do
-        secret :string, :required
+        secret :string, :required, :sensitive_exposed
       end
-      result Types::Secret
+      result Types::Secret, :sensitive
 
       def execute
         generate_hashed_secret

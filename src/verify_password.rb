@@ -6,7 +6,7 @@ module Foobara
       inputs do
         user Types::User, :required
         # TODO: we should add a processor that flags an attribute as sensitive so we can scrub
-        plaintext_password :string, :required
+        plaintext_password :string, :required, :sensitive
       end
       result :boolean
 

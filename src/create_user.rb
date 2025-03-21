@@ -4,7 +4,7 @@ module Foobara
       inputs Types::User.attributes_for_create
 
       add_inputs do
-        plaintext_password :string
+        plaintext_password :string, :sensitive_exposed
       end
 
       result Types::User

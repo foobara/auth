@@ -3,7 +3,7 @@ module Foobara
     class SetPassword < Foobara::Command
       inputs do
         user Types::User
-        plaintext_password :string, :required
+        plaintext_password :string, :required, :sensitive_exposed
       end
       result Types::User
 

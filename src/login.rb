@@ -25,15 +25,15 @@ module Foobara
         username :string, :allow_nil
         email :string, :allow_nil
         username_or_email :string, :allow_nil
-        plaintext_password :string, :required
+        plaintext_password :string, :required, :sensitive_exposed
         # Configure these instead of defaulting them here?
         token_ttl :integer, default: 30 * 60
         refresh_token_ttl :integer, default: 7 * 24 * 60 * 60
       end
 
       result do
-        access_token :string, :required
-        refresh_token :string, :required
+        access_token :string, :required, :sensitive_exposed
+        refresh_token :string, :required, :sensitive_exposed
       end
 
       def execute

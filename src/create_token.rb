@@ -13,8 +13,8 @@ module Foobara
       end
 
       result do
-        token_string :string, :required
-        token_record Types::Token, :required
+        token_string :string, :required, :sensitive
+        token_record Types::Token, :required, :sensitive
       end
 
       depends_on BuildSecret

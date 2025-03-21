@@ -21,15 +21,15 @@ module Foobara
 
       inputs do
         user Types::User, :required
-        refresh_token_text :string, :required
+        refresh_token_text :string, :required, :sensitive
         # Can we get these TTLs off of the refresh token?
         token_ttl :integer, default: 30 * 60
         refresh_token_ttl :integer, default: 7 * 24 * 60 * 60
       end
 
       result do
-        access_token :string, :required
-        refresh_token :string, :required
+        access_token :string, :required, :sensitive_exposed
+        refresh_token :string, :required, :sensitive_exposed
       end
 
       def execute
