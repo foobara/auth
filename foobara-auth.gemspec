@@ -26,7 +26,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency "argon2"
   spec.add_dependency "jwt"
 
-  spec.add_dependency "foobara"
+  spec.add_dependency "foobara", "~> 0.0.1"
 
   spec.require_paths = ["lib"]
   spec.metadata["rubygems_mfa_required"] = "true"

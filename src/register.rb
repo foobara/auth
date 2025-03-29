@@ -7,7 +7,7 @@ module Foobara
 
       inputs do
         username :string, :required
-        email :email, :required
+        email :email, :allow_nil
         plaintext_password :string, :allow_nil, :sensitive_exposed
       end
 
@@ -15,6 +15,7 @@ module Foobara
 
       def execute
         create_user
+
         if password?
           set_password
         end

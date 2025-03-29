@@ -8,7 +8,7 @@ module Foobara
         attributes do
           id :integer
           username :string, :required
-          email :email, :required
+          email :email, :allow_nil
           roles [Types::Role], default: []
           api_keys [Types::Token], :sensitive, default: []
           refresh_tokens [Types::Token], :sensitive, default: []

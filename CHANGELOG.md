@@ -1,3 +1,7 @@
+## [0.0.3] - 2025-03-28
+
+- Allow not having an email
+
 ## [0.0.2] - 2025-03-21
 
 - Implement/test lots of basic auth behavior such as
