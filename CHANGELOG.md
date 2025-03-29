@@ -1,3 +1,7 @@
+## [0.0.4] - 2025-03-29
+
+- Do not pass user into RefreshLogin
+
 ## [0.0.3] - 2025-03-28
 
 - Allow not having an email

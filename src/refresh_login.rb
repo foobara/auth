@@ -18,10 +18,10 @@ module Foobara
       end
 
       depends_on CreateToken, VerifyToken
+      depends_on_entities Types::Token
 
       inputs do
-        user Types::User, :required
-        refresh_token_text :string, :required, :sensitive
+        refresh_token :string, :required, :sensitive
         # Can we get these TTLs off of the refresh token?
         token_ttl :integer, default: 30 * 60
         refresh_token_ttl :integer, default: 7 * 24 * 60 * 60
@@ -34,8 +34,7 @@ module Foobara
 
       def execute
         determine_refresh_token_id_and_secret
-        load_refresh_token
-        validate_refresh_token_belongs_to_user
+        load_refresh_token_record
         verify_refresh_token
         # Delete it instead maybe?
         mark_refresh_token_as_used
@@ -49,25 +48,19 @@ module Foobara
         tokens
       end
 
-      attr_accessor :access_token, :new_refresh_token, :now, :expires_at, :refresh_token,
+      attr_accessor :access_token, :new_refresh_token, :now, :expires_at, :refresh_token_record,
                     :refresh_token_id, :refresh_token_secret, :token_group
 
       def determine_refresh_token_id_and_secret
-        self.refresh_token_id, self.refresh_token_secret = refresh_token_text.split("_")
+        self.refresh_token_id, self.refresh_token_secret = refresh_token.split("_")
       end
 
-      def load_refresh_token
-        self.refresh_token = Types::Token.load(refresh_token_id)
-      end
-
-      def validate_refresh_token_belongs_to_user
-        unless user.refresh_tokens.any? { |token| token.id == refresh_token_id }
-          add_runtime_error(RefreshTokenNotOwnedByUser.new(context: { refresh_token_id: }))
-        end
+      def load_refresh_token_record
+        self.refresh_token_record = Types::Token.load(refresh_token_id)
       end
 
       def verify_refresh_token
-        valid = run_subcommand!(VerifyToken, token_string: refresh_token_text)
+        valid = run_subcommand!(VerifyToken, token_string: refresh_token)
 
         unless valid[:verified]
           add_runtime_error(InvalidRefreshTokenError.new(context: { refresh_token_id: }))
@@ -75,7 +68,7 @@ module Foobara
       end
 
       def mark_refresh_token_as_used
-        refresh_token.use_up!
+        refresh_token_record.use_up!
       end
 
       def determine_timestamps
@@ -93,6 +86,10 @@ module Foobara
         self.access_token = JWT.encode(payload, jwt_secret, "HS256")
       end
 
+      def user
+        @user ||= Types::User.that_owns(refresh_token_record, "refresh_tokens")
+      end
+
       def jwt_secret
         jwt_secret_text = ENV.fetch("JWT_SECRET", nil)
 
@@ -106,7 +103,7 @@ module Foobara
       end
 
       def determine_token_group
-        self.token_group = refresh_token&.token_group || SecureRandom.uuid
+        self.token_group = refresh_token_record&.token_group || SecureRandom.uuid
       end
 
       def generate_new_refresh_token

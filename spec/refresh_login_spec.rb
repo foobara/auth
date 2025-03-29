@@ -17,15 +17,12 @@ RSpec.describe Foobara::Auth::RefreshLogin do
   let(:plaintext_password) { "somepassword" }
 
   context "when authenticating with refresh token" do
-    let(:refresh_token_text) do
+    let(:refresh_token) do
       Foobara::Auth::Login.run!(user: user.id, plaintext_password:)[:refresh_token]
     end
 
     let(:inputs) do
-      {
-        user: user.id,
-        refresh_token_text:
-      }
+      { refresh_token: }
     end
 
     it "is successful" do
@@ -35,7 +32,7 @@ RSpec.describe Foobara::Auth::RefreshLogin do
     end
 
     it "marks the original refresh token as used" do
-      refresh_token_text
+      refresh_token
 
       reloaded_user = Foobara::Auth::FindUser.run!(id: user.id)
       original_token_id = reloaded_user.refresh_tokens.first.id
@@ -51,10 +48,10 @@ RSpec.describe Foobara::Auth::RefreshLogin do
 
     context "with an invalid refresh token" do
       let(:inputs) do
-        { user: user.id, refresh_token_text: invalid_token }
+        { refresh_token: invalid_token }
       end
       let(:invalid_token) do
-        text = refresh_token_text.dup
+        text = refresh_token.dup
         text[-5] = text[-5] == "x" ? "y" : "x"
         text
       end
@@ -62,23 +59,6 @@ RSpec.describe Foobara::Auth::RefreshLogin do
       it "fails with appropriate error" do
         expect(outcome).to_not be_success
         expect(outcome.errors_hash).to include("runtime.invalid_refresh_token")
-      end
-    end
-
-    context "with a token that doesn't belong to the user" do
-      let(:inputs) do
-        { user: user.id, refresh_token_text: other_user_token }
-      end
-      let(:other_user) do
-        Foobara::Auth::CreateUser.run!(username: "Barbara", email: "barbara@foobara.com", plaintext_password:)
-      end
-      let(:other_user_token) do
-        Foobara::Auth::Login.run!(user: other_user.id, plaintext_password:)[:refresh_token]
-      end
-
-      it "fails with appropriate error" do
-        expect(outcome).to_not be_success
-        expect(outcome.errors_hash).to include("runtime.refresh_token_not_owned_by_user")
       end
     end
   end
