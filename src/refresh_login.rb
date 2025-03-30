@@ -112,7 +112,8 @@ module Foobara
 
       def save_new_refresh_token_on_user
         # TODO: maybe override #<< on these objects to dirty the entity??
-        user.refresh_tokens += [*user.refresh_tokens, new_refresh_token[:token_record]]
+        # TODO: DRY this up!!
+        user.refresh_tokens = [new_refresh_token[:token_record], *user.refresh_tokens]
       end
 
       def tokens

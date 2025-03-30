@@ -1,3 +1,7 @@
+## [0.0.5] - 2025-03-29
+
+- Fix bug duplicating refresh tokens
+
 ## [0.0.4] - 2025-03-29
 
 - Do not pass user into RefreshLogin
