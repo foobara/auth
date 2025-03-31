@@ -1,3 +1,8 @@
+## [0.0.6] - 2025-03-31
+
+- Add Logout command
+- DRY up Login/RefreshLogin
+
 ## [0.0.5] - 2025-03-29
 
 - Fix bug duplicating refresh tokens

@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    foobara-auth (0.0.5)
+    foobara-auth (0.0.6)
       argon2
       foobara (~> 0.0.1)
       jwt
@@ -62,7 +62,7 @@ GEM
       foobara-type-generator
       foobara-typescript-react-command-form-generator
       foobara-typescript-remote-command-generator
-    foobara (0.0.88)
+    foobara (0.0.91)
       bigdecimal
       foobara-lru-cache (~> 0.0.2)
       foobara-util (~> 0.0.11)
@@ -123,9 +123,9 @@ GEM
       foobara
       foobara-files-generator
       foobara-typescript-remote-command-generator
-    foobara-typescript-remote-command-generator (0.0.13)
-      foobara
-      foobara-files-generator
+    foobara-typescript-remote-command-generator (0.0.16)
+      foobara (~> 0.0.88)
+      foobara-files-generator (~> 0.0.1)
     foobara-util (0.0.11)
     formatador (1.1.0)
     guard (2.19.1)
@@ -167,7 +167,7 @@ GEM
       shellany (~> 0.0)
     ostruct (0.6.1)
     parallel (1.26.3)
-    parser (3.3.7.3)
+    parser (3.3.7.4)
       ast (~> 2.4.1)
       racc
     pp (0.6.2)
