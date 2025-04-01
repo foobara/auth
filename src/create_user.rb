@@ -4,6 +4,7 @@ module Foobara
       inputs Types::User.attributes_for_create
 
       add_inputs do
+        user_id :integer, :allow_nil
         plaintext_password :string, :sensitive_exposed
       end
 
@@ -24,7 +25,13 @@ module Foobara
       attr_accessor :user
 
       def create_user
-        self.user = Types::User.create(inputs.except(:plaintext_password))
+        inputs = self.inputs.except(:user_id, :plaintext_password)
+
+        if user_id
+          inputs[:id] = user_id
+        end
+
+        self.user = Types::User.create(inputs)
       end
 
       def password_present?

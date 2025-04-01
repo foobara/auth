@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    foobara-auth (0.0.6)
+    foobara-auth (0.0.7)
       argon2
       foobara (~> 0.0.1)
       jwt

@@ -6,6 +6,7 @@ module Foobara
       depends_on CreateUser, SetPassword
 
       inputs do
+        user_id :integer, :allow_nil
         username :string, :required
         email :email, :allow_nil
         plaintext_password :string, :allow_nil, :sensitive_exposed
@@ -26,7 +27,13 @@ module Foobara
       attr_accessor :user
 
       def create_user
-        self.user = run_subcommand!(CreateUser, username:, email:)
+        inputs = { username:, email: }
+
+        if user_id
+          inputs[:user_id] = user_id
+        end
+
+        self.user = run_subcommand!(CreateUser, inputs)
       end
 
       def password?

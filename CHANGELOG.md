@@ -1,3 +1,7 @@
+## [0.0.7] - 2025-03-31
+
+- Support creating a user with a specific user_id
+
 ## [0.0.6] - 2025-03-31
 
 - Add Logout command

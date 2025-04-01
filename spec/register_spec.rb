@@ -43,5 +43,16 @@ RSpec.describe Foobara::Auth::Register do
 
       expect(verify_password).to be true
     end
+
+    context "when specifying a user_id" do
+      let(:inputs) do
+        super().merge(user_id: 1000)
+      end
+
+      it "creates a user with that id" do
+        expect(outcome).to be_success
+        expect(result.id).to eq(1000)
+      end
+    end
   end
 end
