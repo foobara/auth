@@ -1,3 +1,7 @@
+## [0.0.8] - 2025-04-11
+
+- Just seeing if we can successfully push new gems since there's an issue pushing foobara
+
 ## [0.0.7] - 2025-03-31
 
 - Support creating a user with a specific user_id
