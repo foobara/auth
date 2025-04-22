@@ -1,3 +1,7 @@
+## [0.0.9] - 2025-04-22
+
+- Handle malformed jwt tokens
+
 ## [0.0.8] - 2025-04-11
 
 - Just seeing if we can successfully push new gems since there's an issue pushing foobara

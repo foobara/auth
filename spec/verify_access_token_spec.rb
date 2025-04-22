@@ -12,7 +12,7 @@ RSpec.describe Foobara::Auth::VerifyAccessToken do
   let(:plaintext_password) { "somepassword" }
 
   let(:inputs) do
-    { access_token: access_token }
+    { access_token: }
   end
 
   let(:command) { described_class.new(inputs) }
@@ -34,7 +34,7 @@ RSpec.describe Foobara::Auth::VerifyAccessToken do
     # TODO: should this not be success instead??
     bad_token_result = described_class.run!(access_token: bad_key)
     expect(bad_token_result[:verified]).to be false
-    expect(bad_token_result[:failure_reason]).to eq("invalid")
+    expect(bad_token_result[:failure_reason]).to eq("cannot_verify")
   end
 
   context "when token is expired" do
@@ -47,6 +47,19 @@ RSpec.describe Foobara::Auth::VerifyAccessToken do
         expect(result[:verified]).to be false
         expect(result[:failure_reason]).to eq("expired")
       end
+    end
+  end
+
+  context "when token is malformed junk" do
+    let(:access_token) do
+      super()
+      "junk"
+    end
+
+    it "is not successful" do
+      expect(outcome).to be_success
+      expect(result[:verified]).to be false
+      expect(result[:failure_reason]).to eq("invalid")
     end
   end
 end

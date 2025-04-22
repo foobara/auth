@@ -10,7 +10,7 @@ module Foobara
 
       result do
         verified :boolean, :required
-        failure_reason :string, :allow_nil, one_of: %w[invalid expired]
+        failure_reason :string, :allow_nil, one_of: %w[invalid expired cannot_verify]
         payload :associative_array, :allow_nil
         headers :associative_array, :allow_nil
       end
@@ -27,9 +27,11 @@ module Foobara
       def decode_access_token
         self.payload, self.headers = JWT.decode(access_token, jwt_secret)
       rescue JWT::VerificationError
-        self.failure_reason = "invalid"
+        self.failure_reason = "cannot_verify"
       rescue JWT::ExpiredSignature
         self.failure_reason = "expired"
+      rescue JWT::DecodeError
+        self.failure_reason = "invalid"
       end
 
       def set_verified_flag
