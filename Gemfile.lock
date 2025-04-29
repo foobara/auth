@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    foobara-auth (0.0.9)
+    foobara-auth (0.0.10)
       argon2
       foobara (~> 0.0.1)
       jwt
@@ -26,7 +26,7 @@ GEM
     diff-lcs (1.6.1)
     docile (1.4.1)
     dotenv (3.1.8)
-    extract-repo (0.0.10)
+    extract-repo (0.0.11)
       foobara (~> 0.0.102)
       foobara-sh-cli-connector (~> 0.0.1)
     ffi (1.17.2)
@@ -63,7 +63,7 @@ GEM
       foobara-type-generator (~> 0.0.1)
       foobara-typescript-react-command-form-generator (~> 0.0.1)
       foobara-typescript-remote-command-generator (~> 0.0.1)
-    foobara (0.0.108)
+    foobara (0.0.114)
       bigdecimal
       foobara-lru-cache (~> 0.0.2)
       foobara-util (~> 0.0.11)
@@ -79,7 +79,7 @@ GEM
       foobara-files-generator
     foobara-dotenv-loader (0.0.3)
       dotenv
-    foobara-empty-ruby-project-generator (0.0.17)
+    foobara-empty-ruby-project-generator (0.0.18)
       extract-repo (~> 0.0.1)
       foobara (~> 0.0.94)
       foobara-files-generator (~> 0.0.1)
@@ -114,7 +114,7 @@ GEM
     foobara-rubocop-rules (0.0.8)
       rubocop
       rubocop-rspec
-    foobara-sh-cli-connector (0.0.15)
+    foobara-sh-cli-connector (0.0.16)
       foobara (~> 0.0.88)
     foobara-sh-cli-connector-generator (0.0.4)
       foobara-files-generator (~> 0.0.1)
@@ -125,7 +125,7 @@ GEM
       foobara-files-generator
     foobara-typescript-react-command-form-generator (0.0.12)
       foobara-typescript-remote-command-generator (~> 0.0.1)
-    foobara-typescript-remote-command-generator (0.0.18)
+    foobara-typescript-remote-command-generator (0.0.19)
       foobara-files-generator (~> 0.0.1)
     foobara-util (0.0.11)
     formatador (1.1.0)
@@ -152,7 +152,7 @@ GEM
       pp (>= 0.6.0)
       rdoc (>= 4.0.0)
       reline (>= 0.4.2)
-    json (2.10.2)
+    json (2.11.3)
     jwt (2.10.1)
       base64
     language_server-protocol (3.17.0.4)
@@ -182,10 +182,10 @@ GEM
     pry-byebug (3.11.0)
       byebug (~> 12.0)
       pry (>= 0.13, < 0.16)
-    psych (5.2.3)
+    psych (5.2.4)
       date
       stringio
-    public_suffix (6.0.1)
+    public_suffix (6.0.2)
     racc (1.8.1)
     rainbow (3.1.1)
     rake (13.2.1)
@@ -204,17 +204,17 @@ GEM
       rspec-mocks (~> 3.13.0)
     rspec-core (3.13.3)
       rspec-support (~> 3.13.0)
-    rspec-expectations (3.13.3)
+    rspec-expectations (3.13.4)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.13.0)
     rspec-its (2.0.0)
       rspec-core (>= 3.13.0)
       rspec-expectations (>= 3.13.0)
-    rspec-mocks (3.13.2)
+    rspec-mocks (3.13.3)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.13.0)
-    rspec-support (3.13.2)
-    rubocop (1.75.3)
+    rspec-support (3.13.3)
+    rubocop (1.75.4)
       json (~> 2.3)
       language_server-protocol (~> 3.17.0.2)
       lint_roller (~> 1.1.0)

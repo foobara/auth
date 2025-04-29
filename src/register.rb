@@ -2,6 +2,7 @@ require_relative "types/user"
 
 module Foobara
   module Auth
+    # TODO: should raise error if username or email already in use!
     class Register < Foobara::Command
       depends_on CreateUser, SetPassword
 

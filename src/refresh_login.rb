@@ -6,11 +6,6 @@ module Foobara
         message "Invalid refresh token"
       end
 
-      class RefreshTokenNotOwnedByUser < Foobara::RuntimeError
-        context refresh_token_id: :string
-        message "This refresh token is not owned by this user"
-      end
-
       depends_on CreateRefreshToken, VerifyToken, BuildAccessToken
       depends_on_entities Types::Token
 
@@ -32,6 +27,8 @@ module Foobara
         # Delete it instead maybe?
         mark_refresh_token_as_used
 
+        load_user
+
         generate_access_token
         generate_new_refresh_token
 
@@ -39,7 +36,7 @@ module Foobara
       end
 
       attr_accessor :access_token, :new_refresh_token, :expires_at, :refresh_token_record,
-                    :refresh_token_id, :refresh_token_secret
+                    :refresh_token_id, :refresh_token_secret, :user
 
       def determine_refresh_token_id_and_secret
         self.refresh_token_id, self.refresh_token_secret = refresh_token.split("_")
@@ -65,8 +62,8 @@ module Foobara
         self.access_token = run_subcommand!(BuildAccessToken, user:, token_ttl: access_token_ttl)
       end
 
-      def user
-        @user ||= Types::User.that_owns(refresh_token_record, "refresh_tokens")
+      def load_user
+        self.user ||= Types::User.that_owns(refresh_token_record, "refresh_tokens")
       end
 
       def generate_new_refresh_token

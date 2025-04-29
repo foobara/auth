@@ -1,3 +1,7 @@
+## [0.0.10] - 2025-04-28
+
+- Add AuthenticateWithApiKey command
+
 ## [0.0.9] - 2025-04-22
 
 - Handle malformed jwt tokens
