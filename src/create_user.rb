@@ -12,6 +12,9 @@ module Foobara
 
       depends_on SetPassword
 
+      possible_input_error :username, :already_in_use
+      possible_input_error :email, :already_in_use
+
       def execute
         create_user
 
@@ -22,7 +25,26 @@ module Foobara
         user
       end
 
+      def validate
+        validate_username_is_unique
+        if email
+          validate_email_is_unique
+        end
+      end
+
       attr_accessor :user
+
+      def validate_username_is_unique
+        if Types::User.find_by(username:)
+          add_input_error(input: :username, symbol: :already_in_use)
+        end
+      end
+
+      def validate_email_is_unique
+        if Types::User.find_by(email:)
+          add_input_error(input: :email, symbol: :already_in_use)
+        end
+      end
 
       def create_user
         inputs = self.inputs.except(:user_id, :plaintext_password)

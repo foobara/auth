@@ -54,5 +54,49 @@ RSpec.describe Foobara::Auth::Register do
         expect(result.id).to eq(1000)
       end
     end
+
+    context "when username is already in use" do
+      let(:other_user) do
+        described_class.run!(username:,
+                             email: "foo@foo.com",
+                             plaintext_password:)
+      end
+
+      it "does not create the user and gives the expected result" do
+        other_user
+
+        user_class = Foobara::Auth::Types::User
+
+        expect(user_class.transaction { user_class.count }).to eq(1)
+
+        expect(outcome).to_not be_success
+        # TODO: I don't think I like that this is from create_user instead of register_user
+        expect(outcome.errors_hash.keys).to eq(["foobara::auth::create_user>data.username.already_in_use"])
+
+        expect(user_class.transaction { user_class.count }).to eq(1)
+      end
+    end
+
+    context "when email is already in use" do
+      let(:other_user) do
+        described_class.run!(username: "Basil",
+                             email:,
+                             plaintext_password:)
+      end
+
+      it "does not create the user and gives the expected result" do
+        other_user
+
+        user_class = Foobara::Auth::Types::User
+
+        expect(user_class.transaction { user_class.count }).to eq(1)
+
+        expect(outcome).to_not be_success
+        # TODO: I don't think I like that this is from create_user instead of register_user
+        expect(outcome.errors_hash.keys).to eq(["foobara::auth::create_user>data.email.already_in_use"])
+
+        expect(user_class.transaction { user_class.count }).to eq(1)
+      end
+    end
   end
 end
