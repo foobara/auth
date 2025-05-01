@@ -49,5 +49,16 @@ RSpec.describe Foobara::Auth::AuthenticateWithApiKey do
         expect(outcome.errors_hash).to include("runtime.invalid_api_key")
       end
     end
+
+    context "with a key that doesn't exist" do
+      let(:inputs) do
+        { api_key: "doesnotexist" }
+      end
+
+      it "fails with appropriate error" do
+        expect(outcome).to_not be_success
+        expect(outcome.errors_hash).to include("runtime.api_key_does_not_exist")
+      end
+    end
   end
 end

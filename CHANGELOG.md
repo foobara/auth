@@ -1,3 +1,7 @@
+## [0.0.11] - 2025-05-01
+
+- Add a runtime error when an api key doesn't exist
+
 ## [0.0.10] - 2025-04-28
 
 - Add AuthenticateWithApiKey command

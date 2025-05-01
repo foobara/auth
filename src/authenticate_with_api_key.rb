@@ -4,8 +4,13 @@ module Foobara
   module Auth
     class AuthenticateWithApiKey < Foobara::Command
       class InvalidApiKeyError < Foobara::RuntimeError
-        context api_key_id: :string
+        context({})
         message "Invalid api key"
+      end
+
+      class ApiKeyDoesNotExistError < Foobara::RuntimeError
+        context({})
+        message "No such key"
       end
 
       depends_on VerifyToken
@@ -37,13 +42,15 @@ module Foobara
 
       def load_api_key_record
         self.api_key_record = Types::Token.load(api_key_id)
+      rescue Foobara::Entity::NotFoundError
+        add_runtime_error(ApiKeyDoesNotExistError)
       end
 
       def verify_api_key
         valid = run_subcommand!(VerifyToken, token_string: api_key)
 
         unless valid[:verified]
-          add_runtime_error(InvalidApiKeyError.new(context: { api_key_id: }))
+          add_runtime_error(InvalidApiKeyError)
         end
       end
 
