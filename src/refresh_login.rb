@@ -2,7 +2,7 @@ module Foobara
   module Auth
     class RefreshLogin < Foobara::Command
       class InvalidRefreshTokenError < Foobara::RuntimeError
-        context refresh_token_id: :string
+        context({})
         message "Invalid refresh token"
       end
 
@@ -44,13 +44,15 @@ module Foobara
 
       def load_refresh_token_record
         self.refresh_token_record = Types::Token.load(refresh_token_id)
+      rescue Foobara::Entity::NotFoundError
+        add_runtime_error(InvalidRefreshTokenError.new)
       end
 
       def verify_refresh_token
         valid = run_subcommand!(VerifyToken, token_string: refresh_token)
 
         unless valid[:verified]
-          add_runtime_error(InvalidRefreshTokenError.new(context: { refresh_token_id: }))
+          add_runtime_error(InvalidRefreshTokenError.new)
         end
       end
 

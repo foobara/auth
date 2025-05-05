@@ -61,5 +61,18 @@ RSpec.describe Foobara::Auth::RefreshLogin do
         expect(outcome.errors_hash).to include("runtime.invalid_refresh_token")
       end
     end
+
+    context "with a non-existent refresh token" do
+      it "gives an invalid refresh token error error" do
+        refresh_token
+
+        Foobara::Auth::Types::Token.transaction do
+          Foobara::Auth::Types::Token.current_transaction_table.hard_delete_all!
+        end
+
+        expect(outcome).to_not be_success
+        expect(outcome.errors_hash).to include("runtime.invalid_refresh_token")
+      end
+    end
   end
 end
