@@ -10,7 +10,7 @@ module Foobara
 
       result do
         verified :boolean, :required
-        failure_reason :string, :allow_nil, one_of: %w[invalid expired cannot_verify]
+        failure_reason :string, :allow_nil, one_of: ["invalid", "expired", "cannot_verify"]
         payload :associative_array, :allow_nil
         headers :associative_array, :allow_nil
       end

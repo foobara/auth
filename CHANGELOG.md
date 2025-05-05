@@ -1,3 +1,7 @@
+## [0.0.12] - 2025-05-05
+
+- Do not explode when refresh token doesn't exist
+
 ## [0.0.11] - 2025-05-01
 
 - Add a runtime error when an api key doesn't exist
