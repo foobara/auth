@@ -18,6 +18,11 @@ module Foobara
         message "Token is expired"
       end
 
+      class TokenDoesNotExistError < Foobara::RuntimeError
+        context({})
+        message "Token does not exist"
+      end
+
       inputs do
         # TODO: we should add a processor that flags an attribute as sensitive so we can scrub
         token_string :string, :required, :sensitive
@@ -62,7 +67,8 @@ module Foobara
 
       def load_token_record
         self.token_record_to_verify_against = Types::Token.load(token_id)
-        # TODO: handle no record found...
+      rescue Entity::NotFoundError
+        add_runtime_error(TokenDoesNotExistError)
       end
 
       def verify_hashed_secret_against_token_record

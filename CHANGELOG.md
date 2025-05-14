@@ -1,3 +1,7 @@
+## [0.0.13] - 2025-05-13
+
+- Allow logout to work even if refresh token is deleted/invalid
+
 ## [0.0.12] - 2025-05-05
 
 - Do not explode when refresh token doesn't exist

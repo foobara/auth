@@ -63,4 +63,18 @@ RSpec.describe Foobara::Auth::VerifyToken do
       expect(outcome.errors_hash.keys).to include("runtime.inactive_token")
     end
   end
+
+  context "when token doesn't exist" do
+    it "is not successful" do
+      api_key_id
+
+      Foobara::Auth::Types::Token.transaction do
+        api_key = Foobara::Auth::Types::Token.load(api_key_id)
+        api_key.hard_delete!
+      end
+
+      expect(outcome).to_not be_success
+      expect(outcome.errors_hash.keys).to include("runtime.token_does_not_exist")
+    end
+  end
 end
