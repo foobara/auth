@@ -13,17 +13,13 @@ module Foobara
       def execute
         verify_secret_against_hashed_secret
 
-        verified?
+        is_verified
       end
 
-      attr_accessor :verified
-
-      def verified?
-        !!verified
-      end
+      attr_accessor :is_verified
 
       def verify_secret_against_hashed_secret
-        self.verified = Argon2::Password.verify_password(secret, hashed_secret)
+        self.is_verified = Argon2::Password.verify_password(secret, hashed_secret)
       end
     end
   end
