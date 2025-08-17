@@ -53,7 +53,7 @@ module Foobara
           rescue Halt
             # I'm a bit nervous about rescuing Halt and clearing the errors, but I'm more nervous bout
             # introducing a #run_subcommand method.
-            if error_collection.size == 1 && error_collection.errors.first.is_a?(FindUser::UserNotFoundError) &&
+            if error_collection.size == 1 && error_collection.first.is_a?(FindUser::UserNotFoundError) &&
                username_or_email.include?("@")
               error_collection.clear
               self.user_to_login = run_subcommand!(FindUser, email: username_or_email)
