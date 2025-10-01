@@ -1,3 +1,8 @@
+## [0.1.1] - 2025-10-02
+
+- Add DeleteApiKey command
+- Add GetApiKeySummary command
+
 ## [0.1.0] - 2025-08-22
 
 - Mark as compatible with Foobara 0.1.0
