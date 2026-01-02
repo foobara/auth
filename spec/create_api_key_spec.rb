@@ -15,7 +15,7 @@ RSpec.describe Foobara::Auth::CreateApiKey do
     { user: user.id }
   end
 
-  let(:user) { Foobara::Auth::CreateUser.run!(username: "Basil", email: "basil@foobara.com") }
+  let(:user) { Foobara::Auth::CreateUser.run!(username: "Basil", email: "basil@foobara.org") }
 
   def count
     Foobara::Auth::Types::Token.transaction do

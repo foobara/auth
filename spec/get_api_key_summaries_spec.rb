@@ -15,7 +15,7 @@ RSpec.describe Foobara::Auth::GetApiKeySummaries do
     { user: user }
   end
 
-  let(:user) { Foobara::Auth::CreateUser.run!(username: "Basil", email: "basil@foobara.com") }
+  let(:user) { Foobara::Auth::CreateUser.run!(username: "Basil", email: "basil@foobara.org") }
 
   context "when there are api keys" do
     let(:api_keys) do

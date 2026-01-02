@@ -12,7 +12,7 @@ RSpec.describe Foobara::Auth::ResetPassword do
   let(:errors_hash) { outcome.errors_hash }
 
   let(:user) do
-    Foobara::Auth::CreateUser.run!(username: "Basil", email: "basil@foobara.com", plaintext_password:)
+    Foobara::Auth::CreateUser.run!(username: "Basil", email: "basil@foobara.org", plaintext_password:)
   end
   let(:plaintext_password) { "somepassword" }
   let(:old_password) { plaintext_password }

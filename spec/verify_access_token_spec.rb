@@ -8,7 +8,7 @@ RSpec.describe Foobara::Auth::VerifyAccessToken do
   end
 
   let(:access_token) { Foobara::Auth::Login.run!(user: user.id, plaintext_password:)[:access_token] }
-  let(:user) { Foobara::Auth::CreateUser.run!(username: "Basil", email: "basil@foobara.com", plaintext_password:) }
+  let(:user) { Foobara::Auth::CreateUser.run!(username: "Basil", email: "basil@foobara.org", plaintext_password:) }
   let(:plaintext_password) { "somepassword" }
 
   let(:inputs) do

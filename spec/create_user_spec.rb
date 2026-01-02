@@ -15,7 +15,7 @@ RSpec.describe Foobara::Auth::CreateUser do
     { username:, email: }
   end
   let(:username) { "Basil" }
-  let(:email) { "basil@foobara.com" }
+  let(:email) { "basil@foobara.org" }
 
   it "is successful" do
     expect(outcome).to be_success

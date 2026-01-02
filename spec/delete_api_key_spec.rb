@@ -15,7 +15,7 @@ RSpec.describe Foobara::Auth::DeleteApiKey do
     { token: token_id_to_delete }
   end
 
-  let(:user) { Foobara::Auth::CreateUser.run!(username: "Basil", email: "basil@foobara.com") }
+  let(:user) { Foobara::Auth::CreateUser.run!(username: "Basil", email: "basil@foobara.org") }
 
   context "when there are api keys" do
     let(:api_keys) do

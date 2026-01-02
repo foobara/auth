@@ -7,7 +7,7 @@ RSpec.describe Foobara::Auth::VerifyToken do
 
   let(:api_key) { Foobara::Auth::CreateApiKey.run!(user: user.id) }
   let(:api_key_id) { api_key.split("_").first }
-  let(:user) { Foobara::Auth::CreateUser.run!(username: "Basil", email: "basil@foobara.com") }
+  let(:user) { Foobara::Auth::CreateUser.run!(username: "Basil", email: "basil@foobara.org") }
 
   let(:inputs) do
     { token_string: api_key }

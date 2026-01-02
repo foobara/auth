@@ -16,7 +16,7 @@ RSpec.describe Foobara::Auth::VerifyPassword do
   let(:inputs) do
     { user:, plaintext_password: password_to_check }
   end
-  let(:user) { Foobara::Auth::CreateUser.run!(username: "Basil", email: "basil@foobara.com") }
+  let(:user) { Foobara::Auth::CreateUser.run!(username: "Basil", email: "basil@foobara.org") }
   let(:plaintext_password) { "somepassword" }
   let(:password_to_check) { plaintext_password }
 
