@@ -83,6 +83,7 @@ module Foobara
             token = Types::Token.load(token_record_to_verify_against.id)
             token.expire!
           end
+
           add_runtime_error(ExpiredTokenError)
         end
       end

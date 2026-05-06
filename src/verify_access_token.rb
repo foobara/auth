@@ -12,6 +12,7 @@ module Foobara
         verified :boolean, :required
         failure_reason :string, :allow_nil, one_of: ["invalid", "expired", "cannot_verify"]
         payload :associative_array, :allow_nil
+        # NOTE: a better name would have been jwt_headers to avoid possible confusion with HTTP headers
         headers :associative_array, :allow_nil
       end
 
@@ -43,6 +44,7 @@ module Foobara
           verified:,
           failure_reason:,
           payload:,
+          # NOTE: a better name would have been jwt_headers to avoid possible confusion with HTTP headers
           headers:
         }
       end
