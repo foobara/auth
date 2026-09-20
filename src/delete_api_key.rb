@@ -32,9 +32,9 @@ module Foobara
         if api_keys.include?(token)
           user.api_keys = api_keys - [token]
         else
-          # :nocov:
+          # simplecov:disable
           raise "User has no such api key"
-          # :nocov:
+          # simplecov:enable
         end
       end
 
